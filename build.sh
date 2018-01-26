@@ -236,7 +236,7 @@ PackageTests()
     fi
 
     cp $outputFolder/*.dll $testPackageFolder
-    cp ./*.sh $testPackageFolder
+    cp ./test.sh $testPackageFolder
 
     echo "Creating MDBs for tests"
     CreateMdbs $testPackageFolder
