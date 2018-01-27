@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using NzbDrone.Core.MediaFiles.MediaInfo;
 using NzbDrone.Core.Parser.Model;
 using NzbDrone.Core.Qualities;
@@ -81,49 +81,50 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting.Augmenters
             }
 
             var width = mediaInfo.Width;
+            var qualitySource = GetQualitySource(quality.Quality);
             Quality newQuality = null;
 
             if (width > 1920)
             {
-                if (quality.QualitySource == QualitySource.Bluray)
+                if (qualitySource == QualitySource.Bluray)
                 {
                     newQuality = Quality.Bluray2160p;
                 }
-                else if (quality.QualitySource == QualitySource.Web)
+                else if (qualitySource == QualitySource.Web)
                 {
                     newQuality = Quality.WEBDL2160p;
                 }
-                else if (quality.QualitySource == QualitySource.Television)
+                else if (qualitySource == QualitySource.Television)
                 {
                     newQuality = Quality.HDTV2160p;
                 }
             }
             else if (width > 1280)
             {
-                if (quality.QualitySource == QualitySource.Bluray)
+                if (qualitySource == QualitySource.Bluray)
                 {
                     newQuality = Quality.Bluray1080p;
                 }
-                else if (quality.QualitySource == QualitySource.Web)
+                else if (qualitySource == QualitySource.Web)
                 {
                     newQuality = Quality.WEBDL1080p;
                 }
-                else if (quality.QualitySource == QualitySource.Television)
+                else if (qualitySource == QualitySource.Television)
                 {
                     newQuality = Quality.HDTV1080p;
                 }
             }
             else if (width > 854)
             {
-                if (quality.QualitySource == QualitySource.Bluray)
+                if (qualitySource == QualitySource.Bluray)
                 {
                     newQuality = Quality.Bluray720p;
                 }
-                else if (quality.QualitySource == QualitySource.Web)
+                else if (qualitySource == QualitySource.Web)
                 {
                     newQuality = Quality.WEBDL720p;
                 }
-                else if (quality.QualitySource == QualitySource.Television)
+                else if (qualitySource == QualitySource.Television)
                 {
                     newQuality = Quality.HDTV720p;
                 }
@@ -140,6 +141,31 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting.Augmenters
             }
 
             return quality;
+        }
+
+        private QualitySource GetQualitySource(Quality quality)
+        {
+            if (quality == Quality.Bluray2160p || quality == Quality.Bluray1080p || quality == Quality.Bluray720p)
+            {
+                return QualitySource.Bluray;
+            }
+
+            if (quality == Quality.WEBDL2160p || quality == Quality.WEBDL1080p || quality == Quality.WEBDL720p || quality == Quality.WEBDL480p)
+            {
+                return QualitySource.Web;
+            }
+
+            if (quality == Quality.DVD)
+            {
+                return QualitySource.DVD;
+            }
+
+            if (quality == Quality.RAWHD || quality == Quality.HDTV2160p || quality == Quality.HDTV1080p || quality == Quality.HDTV720p || quality == Quality.SDTV)
+            {
+                return QualitySource.Television;
+            }
+
+            return QualitySource.Unknown;
         }
     }
 }

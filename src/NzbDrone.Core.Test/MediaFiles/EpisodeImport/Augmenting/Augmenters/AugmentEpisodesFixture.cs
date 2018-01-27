@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting;
 using NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting.Augmenters;
+using NzbDrone.Core.Parser;
 using NzbDrone.Core.Parser.Model;
 using NzbDrone.Core.Test.Framework;
 using NzbDrone.Core.Tv;
@@ -14,7 +13,7 @@ using NzbDrone.Test.Common;
 namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport.Augmenting.Augmenters
 {
     [TestFixture]
-    public class AugmentingServiceFixture : CoreTest<AugmentingService>
+    public class AugmentEpisodesFixture : CoreTest<AugmentEpisodes>
     {
         private Series _series;
 
@@ -44,7 +43,10 @@ namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport.Augmenting.Augmenters
                                    Series = _series
                                };
 
-            Subject.Augment(localEpisode, false).ParsedEpisodeInfo.Should().Be(fileEpisodeInfo);
+            Subject.Augment(localEpisode, false);
+
+            Mocker.GetMock<IParsingService>()
+                  .Verify(v => v.GetEpisodes(fileEpisodeInfo, _series, localEpisode.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -60,7 +62,10 @@ namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport.Augmenting.Augmenters
                 Series = _series
             };
 
-            Subject.Augment(localEpisode, true).ParsedEpisodeInfo.Should().Be(fileEpisodeInfo);
+            Subject.Augment(localEpisode, true);
+
+            Mocker.GetMock<IParsingService>()
+                  .Verify(v => v.GetEpisodes(fileEpisodeInfo, _series, localEpisode.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -76,7 +81,10 @@ namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport.Augmenting.Augmenters
                 Series = _series
             };
 
-            Subject.Augment(localEpisode, false).ParsedEpisodeInfo.Should().Be(fileEpisodeInfo);
+            Subject.Augment(localEpisode, false);
+
+            Mocker.GetMock<IParsingService>()
+                  .Verify(v => v.GetEpisodes(fileEpisodeInfo, _series, localEpisode.SceneSource, null), Times.Once());
         }
 
         [Test]
@@ -92,7 +100,10 @@ namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport.Augmenting.Augmenters
                 Series = _series
             };
 
-            Subject.Augment(localEpisode, false).ParsedEpisodeInfo.Should().Be(folderEpisodeInfo);
+            Subject.Augment(localEpisode, false);
+
+            Mocker.GetMock<IParsingService>()
+                  .Verify(v => v.GetEpisodes(folderEpisodeInfo, _series, localEpisode.SceneSource, null), Times.Once());
         }
     }
 }

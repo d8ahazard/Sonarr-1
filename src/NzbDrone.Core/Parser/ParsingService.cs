@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using NzbDrone.Common.Extensions;
-using NzbDrone.Core.Configuration;
 using NzbDrone.Core.DataAugmentation.Scene;
-using NzbDrone.Core.Download;
 using NzbDrone.Core.IndexerSearch.Definitions;
-using NzbDrone.Core.MediaFiles;
-using NzbDrone.Core.MediaFiles.EpisodeImport;
-using NzbDrone.Core.MediaFiles.MediaInfo;
 using NzbDrone.Core.Parser.Model;
-using NzbDrone.Core.Qualities;
 using NzbDrone.Core.Tv;
 
 namespace NzbDrone.Core.Parser
@@ -23,7 +15,7 @@ namespace NzbDrone.Core.Parser
         RemoteEpisode Map(ParsedEpisodeInfo parsedEpisodeInfo, int seriesId, IEnumerable<int> episodeIds);
         List<Episode> GetEpisodes(ParsedEpisodeInfo parsedEpisodeInfo, Series series, bool sceneSource, SearchCriteriaBase searchCriteria = null);
         ParsedEpisodeInfo ParseSpecialEpisodeTitle(ParsedEpisodeInfo parsedEpisodeInfo, string releaseTitle, int tvdbId, int tvRageId, SearchCriteriaBase searchCriteria = null);
-        ParsedEpisodeInfo ParseSpecialEpisodeTitle(string releaseTitle, Series series);
+        ParsedEpisodeInfo ParseSpecialEpisodeTitle(ParsedEpisodeInfo parsedEpisodeInfo, string releaseTitle, Series series);
     }
 
     public class ParsingService : IParsingService
@@ -31,22 +23,16 @@ namespace NzbDrone.Core.Parser
         private readonly IEpisodeService _episodeService;
         private readonly ISeriesService _seriesService;
         private readonly ISceneMappingService _sceneMappingService;
-        private readonly IVideoFileInfoReader _videoFileInfoReader;
-        private readonly IConfigService _configService;
         private readonly Logger _logger;
 
         public ParsingService(IEpisodeService episodeService,
                               ISeriesService seriesService,
                               ISceneMappingService sceneMappingService,
-                              IVideoFileInfoReader videoFileInfoReader,
-                              IConfigService configService,
                               Logger logger)
         {
             _episodeService = episodeService;
             _seriesService = seriesService;
             _sceneMappingService = sceneMappingService;
-            _videoFileInfoReader = videoFileInfoReader;
-            _configService = configService;
             _logger = logger;
         }
 
@@ -181,7 +167,7 @@ namespace NzbDrone.Core.Parser
             return ParseSpecialEpisodeTitle(parsedEpisodeInfo, releaseTitle, series);
         }
 
-        private ParsedEpisodeInfo ParseSpecialEpisodeTitle(ParsedEpisodeInfo parsedEpisodeInfo, string releaseTitle, Series series)
+        public ParsedEpisodeInfo ParseSpecialEpisodeTitle(ParsedEpisodeInfo parsedEpisodeInfo, string releaseTitle, Series series)
         {
             // SxxE00 episodes are sometimes mapped via TheXEM, don't use episode title parsing in that case.
             if (parsedEpisodeInfo != null && parsedEpisodeInfo.IsPossibleSceneSeasonSpecial && series.UseSceneNumbering)

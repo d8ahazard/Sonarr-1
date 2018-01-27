@@ -61,33 +61,35 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport
                 downloadClientItemInfo = Parser.Parser.ParseTitle(downloadClientItem.Title);
             }
 
-            var nonSampleVideoFileCount = NonSampleVideoFileCount(newFiles, series, downloadClientItemInfo, folderInfo);
+            var nonSampleVideoFileCount = GetNonSampleVideoFileCount(newFiles, series, downloadClientItemInfo, folderInfo);
 
             var decisions = new List<ImportDecision>();
 
             foreach (var file in newFiles)
             {
-                decisions.AddIfNotNull(GetDecision(file, series, downloadClientItem, downloadClientItemInfo, folderInfo, nonSampleVideoFileCount > 1, sceneSource));
+                var localEpisode = new LocalEpisode
+                                   {
+                                       Series = series,
+                                       DownloadClientEpisodeInfo = downloadClientItemInfo,
+                                       FolderEpisodeInfo = folderInfo,
+                                       Path = file,
+                                       SceneSource = sceneSource
+                                   };
+
+                decisions.AddIfNotNull(GetDecision(localEpisode, downloadClientItem, nonSampleVideoFileCount > 1));
             }
 
             return decisions;
         }
 
-        private ImportDecision GetDecision(string file, Series series, DownloadClientItem downloadClientItem, ParsedEpisodeInfo downloadClientEpisodeInfo, ParsedEpisodeInfo folderEpisodeInfo, bool otherFiles, bool sceneSource)
+        private ImportDecision GetDecision(LocalEpisode localEpisode, DownloadClientItem downloadClientItem, bool otherFiles)
         {
             ImportDecision decision = null;
 
-            var fileEpisodeInfo = Parser.Parser.ParsePath(file);
-            var localEpisode = new LocalEpisode
-                               {
-                                   Series = series,
-                                   FileEpisodeInfo = fileEpisodeInfo,
-                                   DownloadClientEpisodeInfo = downloadClientEpisodeInfo,
-                                   FolderEpisodeInfo = folderEpisodeInfo,
-                                   Path = file,
-                                   Size = _diskProvider.GetFileSize(file),
-                                   SceneSource = sceneSource
-                               };
+            var fileEpisodeInfo = Parser.Parser.ParsePath(localEpisode.Path);
+
+            localEpisode.FileEpisodeInfo = fileEpisodeInfo;
+            localEpisode.Size = _diskProvider.GetFileSize(localEpisode.Path);
 
             try
             {
@@ -95,14 +97,14 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport
 
                 if (localEpisode.Episodes.Empty())
                 {
-                    if (localEpisode.ParsedEpisodeInfo.IsPartialSeason)
+                    if (IsPartialSeason(localEpisode))
                     {
                         decision = new ImportDecision(localEpisode, new Rejection("Partial season packs are not supported"));
                     }
-                        else if (localEpisode.ParsedEpisodeInfo.IsSeasonExtra)
-                        {
-                            decision = new ImportDecision(localEpisode, new Rejection("Extras are not supported"));
-                        }
+                    else if (IsSeasonExtra(localEpisode))
+                    {
+                        decision = new ImportDecision(localEpisode, new Rejection("Extras are not supported"));
+                    }
                     else
                     {
                         decision = new ImportDecision(localEpisode, new Rejection("Invalid season or episode"));
@@ -119,14 +121,14 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Couldn't import file. {0}", file);
+                _logger.Error(ex, "Couldn't import file. {0}", localEpisode.Path);
 
                 decision = new ImportDecision(localEpisode, new Rejection("Unexpected error processing file"));
             }
 
             if (decision == null)
             {
-                _logger.Error("Unable to make a decision on {0}", file);
+                _logger.Error("Unable to make a decision on {0}", localEpisode.Path);
             }
             else if (decision.Rejections.Any())
             {
@@ -170,7 +172,7 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport
             return null;
         }
 
-        private int NonSampleVideoFileCount(List<string> videoFiles, Series series, ParsedEpisodeInfo downloadClientItemInfo, ParsedEpisodeInfo folderInfo)
+        private int GetNonSampleVideoFileCount(List<string> videoFiles, Series series, ParsedEpisodeInfo downloadClientItemInfo, ParsedEpisodeInfo folderInfo)
         {
             var isPossibleSpecialEpisode = downloadClientItemInfo?.IsPossibleSpecialEpisode ?? false;
             // If we might already have a special, don't try to get it from the folder info.
@@ -187,6 +189,54 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport
 
                 return true;
             });
+        }
+
+        private bool IsPartialSeason(LocalEpisode localEpisode)
+        {
+            var downloadClientEpisodeInfo = localEpisode.DownloadClientEpisodeInfo;
+            var folderEpisodeInfo = localEpisode.FolderEpisodeInfo;
+            var fileEpisodeInfo = localEpisode.FileEpisodeInfo;
+
+            if (downloadClientEpisodeInfo != null && downloadClientEpisodeInfo.IsPartialSeason)
+            {
+                return true;
+            }
+
+            if (folderEpisodeInfo != null && folderEpisodeInfo.IsPartialSeason)
+            {
+                return true;
+            }
+
+            if (fileEpisodeInfo != null && fileEpisodeInfo.IsPartialSeason)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsSeasonExtra(LocalEpisode localEpisode)
+        {
+            var downloadClientEpisodeInfo = localEpisode.DownloadClientEpisodeInfo;
+            var folderEpisodeInfo = localEpisode.FolderEpisodeInfo;
+            var fileEpisodeInfo = localEpisode.FileEpisodeInfo;
+
+            if (downloadClientEpisodeInfo != null && downloadClientEpisodeInfo.IsSeasonExtra)
+            {
+                return true;
+            }
+
+            if (folderEpisodeInfo != null && folderEpisodeInfo.IsSeasonExtra)
+            {
+                return true;
+            }
+
+            if (fileEpisodeInfo != null && fileEpisodeInfo.IsSeasonExtra)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

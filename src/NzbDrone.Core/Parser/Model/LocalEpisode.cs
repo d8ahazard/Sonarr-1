@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Qualities;
@@ -16,7 +16,6 @@ namespace NzbDrone.Core.Parser.Model
 
         public string Path { get; set; }
         public long Size { get; set; }
-        public ParsedEpisodeInfo ParsedEpisodeInfo { get; set; }
         public ParsedEpisodeInfo FileEpisodeInfo { get; set; }
         public ParsedEpisodeInfo DownloadClientEpisodeInfo { get; set; }
         public ParsedEpisodeInfo FolderEpisodeInfo { get; set; }
@@ -26,6 +25,7 @@ namespace NzbDrone.Core.Parser.Model
         public MediaInfoModel MediaInfo { get; set; }
         public bool ExistingFile { get; set; }
         public bool SceneSource { get; set; }
+        public string ReleaseGroup { get; set; }
         
         public int SeasonNumber 
         { 

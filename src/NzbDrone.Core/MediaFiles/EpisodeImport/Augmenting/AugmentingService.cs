@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using NLog;
@@ -38,9 +38,7 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting
 
         public LocalEpisode Augment(LocalEpisode localEpisode, bool otherFiles)
         {
-            localEpisode.ParsedEpisodeInfo = GetBestEpisodeInfo(localEpisode, otherFiles);
-
-            if (localEpisode.ParsedEpisodeInfo == null)
+            if (localEpisode.DownloadClientEpisodeInfo == null && localEpisode.FolderEpisodeInfo == null && localEpisode.FileEpisodeInfo == null)
             {
                 if (MediaFileExtensions.Extensions.Contains(Path.GetExtension(localEpisode.Path)))
                 {
@@ -64,35 +62,6 @@ namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting
             }
 
             return localEpisode;
-        }
-
-        private ParsedEpisodeInfo GetBestEpisodeInfo(LocalEpisode localEpisode, bool otherFiles)
-        {
-            var parsedEpisodeInfo = localEpisode.FileEpisodeInfo;
-            var downloadClientEpisodeInfo = localEpisode.DownloadClientEpisodeInfo;
-            var folderEpisodeInfo = localEpisode.FolderEpisodeInfo;
-
-            if (!otherFiles && !SceneChecker.IsSceneTitle(Path.GetFileNameWithoutExtension(localEpisode.Path)))
-            {
-                if (downloadClientEpisodeInfo != null && !downloadClientEpisodeInfo.FullSeason)
-                {
-                    parsedEpisodeInfo = localEpisode.DownloadClientEpisodeInfo;
-                }
-                else if (folderEpisodeInfo != null && !folderEpisodeInfo.FullSeason)
-                {
-                    parsedEpisodeInfo = localEpisode.FolderEpisodeInfo;
-                }
-            }
-
-            if (parsedEpisodeInfo == null || parsedEpisodeInfo.IsPossibleSpecialEpisode)
-            {
-                var title = Path.GetFileNameWithoutExtension(localEpisode.Path);
-                var specialEpisodeInfo = _parsingService.ParseSpecialEpisodeTitle(title, localEpisode.Series);
-
-                return specialEpisodeInfo;
-            }
-
-            return parsedEpisodeInfo;
         }
     }
 }

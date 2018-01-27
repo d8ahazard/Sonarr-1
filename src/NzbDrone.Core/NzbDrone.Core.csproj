@@ -761,6 +761,7 @@
     <Compile Include="MediaFiles\Commands\DownloadedEpisodesScanCommand.cs" />
     <Compile Include="MediaFiles\EpisodeImport\Augmenting\Augmenters\AugmentEpisodes.cs" />
     <Compile Include="MediaFiles\EpisodeImport\Augmenting\Augmenters\AugmentQuality.cs" />
+    <Compile Include="MediaFiles\EpisodeImport\Augmenting\Augmenters\AugmentReleaseGroup.cs" />
     <Compile Include="MediaFiles\EpisodeImport\Augmenting\Augmenters\IAugmentLocalEpisode.cs" />
     <Compile Include="MediaFiles\EpisodeImport\Augmenting\AugmentingService.cs" />
     <Compile Include="MediaFiles\EpisodeImport\DetectSampleResult.cs" />
