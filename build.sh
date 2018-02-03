@@ -272,12 +272,18 @@ CleanupWindowsPackage()
 
 PublishArtifacts()
 {
+    # Tests
     echo "##teamcity[publishArtifacts '_tests/** => tests.zip']"
+
+    # Releases
     echo "##teamcity[publishArtifacts '$outputFolder/** => Sonarr.$BRANCH.$BUILD_NUMBER.windows.zip!Sonarr']"
     echo "##teamcity[publishArtifacts '$outputFolderLinux/** => Sonarr.$BRANCH.$BUILD_NUMBER.linux.tar.gz!Sonarr']"
     echo "##teamcity[publishArtifacts '$outputFolderMacOS/** => Sonarr.$BRANCH.$BUILD_NUMBER.macos.tar.gz!Sonarr']"
     echo "##teamcity[publishArtifacts '$outputFolderMacOSApp/** => Sonarr.$BRANCH.$BUILD_NUMBER.macos.zip!Sonarr']"
+    
+    # Debian Package
     echo "##teamcity[publishArtifacts 'debian => debian.zip/debian']"
+    echo "##teamcity[publishArtifacts 'distribution/debian.sh => debian.zip/debian.sh']"
 }
 
 # Use mono or .net depending on OS
