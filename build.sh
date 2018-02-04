@@ -282,8 +282,8 @@ PublishArtifacts()
     echo "##teamcity[publishArtifacts '$outputFolderMacOSApp/** => Sonarr.$BRANCH.$BUILD_NUMBER.macos.zip!Sonarr']"
     
     # Debian Package
-    echo "##teamcity[publishArtifacts 'debian => debian.zip/debian']"
-    echo "##teamcity[publishArtifacts 'distribution/debian.sh => debian.zip/debian.sh']"
+    echo "##teamcity[publishArtifacts 'distribution/debian => debian.zip/debian']"
+    echo "##teamcity[publishArtifacts 'distribution/debian.sh => debian.zip']"
 }
 
 # Use mono or .net depending on OS
