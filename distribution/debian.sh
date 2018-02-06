@@ -1,5 +1,5 @@
 fromdos ./debian/*
-echo $dependent_build_number $dependent_build_branch
+echo Version: "$dependent_build_number" Branch: "$dependent_build_branch"
 
 rm -r ./sonarr_bin/Sonarr.Update
 
@@ -16,7 +16,7 @@ mv ../sonarr_*.changes ./
 rm ../sonarr_*.build
 
 echo Signing Package
-dpkg-sig -k FDA5DFFC --sign builder "sonarr_$dependent_build_number_all.deb"
+dpkg-sig -k FDA5DFFC --sign builder "sonarr_${dependent_build_number}_all.deb"
 
 echo running alien
 alien -r -v ./*.deb
