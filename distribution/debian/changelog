@@ -1,4 +1,4 @@
-sonarr (3.0.0.0) phantom; urgency=low
+sonarr ({version}) {branch}; urgency=low
 
   * Automatic Release.
 
