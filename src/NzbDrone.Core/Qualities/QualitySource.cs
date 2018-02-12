@@ -4,7 +4,9 @@ namespace NzbDrone.Core.Qualities
     {
         Unknown,
         Television,
+        TelevisionRaw,
         Web,
+        WebRip,
         DVD,
         Bluray
     }

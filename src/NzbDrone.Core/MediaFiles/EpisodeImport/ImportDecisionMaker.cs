@@ -7,7 +7,7 @@ using NzbDrone.Common.Disk;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.DecisionEngine;
 using NzbDrone.Core.Download;
-using NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting;
+using NzbDrone.Core.MediaFiles.EpisodeImport.Aggregation;
 using NzbDrone.Core.Parser.Model;
 using NzbDrone.Core.Tv;
 

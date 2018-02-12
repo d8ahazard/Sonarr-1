@@ -2,18 +2,18 @@ using System.IO;
 using NzbDrone.Core.Parser;
 using NzbDrone.Core.Parser.Model;
 
-namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting.Augmenters
+namespace NzbDrone.Core.MediaFiles.EpisodeImport.Aggregation.Aggregators
 {
-    public class AugmentEpisodes : IAugmentLocalEpisode
+    public class AggregateEpisodes : IAggregateLocalEpisode
     {
         private readonly IParsingService _parsingService;
 
-        public AugmentEpisodes(IParsingService parsingService)
+        public AggregateEpisodes(IParsingService parsingService)
         {
             _parsingService = parsingService;
         }
 
-        public LocalEpisode Augment(LocalEpisode localEpisode, bool otherFiles)
+        public LocalEpisode Aggregate(LocalEpisode localEpisode, bool otherFiles)
         {
             var bestEpisodeInfoForEpisodes = GetBestEpisodeInfo(localEpisode, otherFiles);
 

@@ -14,7 +14,7 @@ using NzbDrone.Core.Tv;
 using NzbDrone.Test.Common;
 using FizzWare.NBuilder;
 using NzbDrone.Core.Download;
-using NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting;
+using NzbDrone.Core.MediaFiles.EpisodeImport.Aggregation;
 
 namespace NzbDrone.Core.Test.MediaFiles.EpisodeImport
 {

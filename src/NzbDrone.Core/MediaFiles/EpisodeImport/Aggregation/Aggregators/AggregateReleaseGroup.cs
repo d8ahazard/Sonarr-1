@@ -1,11 +1,11 @@
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Parser.Model;
 
-namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting.Augmenters
+namespace NzbDrone.Core.MediaFiles.EpisodeImport.Aggregation.Aggregators
 {
-    public class AugmentReleaseGroup : IAugmentLocalEpisode
+    public class AggregateReleaseGroup : IAggregateLocalEpisode
     {
-        public LocalEpisode Augment(LocalEpisode localEpisode, bool otherFiles)
+        public LocalEpisode Aggregate(LocalEpisode localEpisode, bool otherFiles)
         {
             var releaseGroup = localEpisode.DownloadClientEpisodeInfo?.ReleaseGroup;
 

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using NzbDrone.Common.Exceptions;
 
-namespace NzbDrone.Core.MediaFiles.EpisodeImport.Augmenting
+namespace NzbDrone.Core.MediaFiles.EpisodeImport.Aggregation
 {
     public class AugmentingFailedException : NzbDroneException
     {
