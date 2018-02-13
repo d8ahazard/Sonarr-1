@@ -16,7 +16,7 @@ mv ../sonarr_*.changes ./
 rm ../sonarr_*.build
 
 echo Signing Package
-dpkg-sig -k FDA5DFFC --sign builder "sonarr_${dependent_build_number}_all.deb"
+dpkg-sig -k 884589CE --sign builder "sonarr_${dependent_build_number}_all.deb"
 
 echo running alien
 alien -r -v ./*.deb
